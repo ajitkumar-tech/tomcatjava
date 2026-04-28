@@ -1,0 +1,88 @@
+name: Remote Deployment  
+ 
+on:
+  push:       
+    branches:     
+      - main 
+env:  
+ Region: ap-south-1
+ name: java-eks-demo
+jobs:  
+  terraform:
+    runs-on: ubuntu-latest 
+    
+    
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+  
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+         distribution: temurin
+         java-version: 17
+
+
+      - name: build
+        run: 
+          mvn clean package
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:  ${{ env.Region }}      
+
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: repo check
+        run: aws ecr create-repository --repository-name ${{ env.name }}  --region ${{ env.Region }}
+        continue-on-error: true  
+     
+      - name: build
+        run: docker build -t ${{ env.name }} .
+     
+
+      - name: tag
+        run: docker tag java-eks-demo:latest 748716953870.dkr.ecr.${{ env.Region }}.amazonaws.com/${{ env.name }}:latest
+           
+      - name: push    
+        run:  docker push 748716953870.dkr.ecr.${{ env.Region }}.amazonaws.com/${{ env.name }}:latest
+
+      
+      
+
+      
+
+      
+
+        
+    
+
+
+
+      
+      
+
+      
+      
+
+      
+
+      
+
+        
+
+
+      
+
+      
+        
+
+        
+
+        
+
+      
