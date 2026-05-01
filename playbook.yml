@@ -3,7 +3,7 @@
   become: yes
 
   tasks:
-    - name: Copy WAR file
+    - name: Copy WAR file to /opt/tomcat/webapps
       copy:
         src: ./target/facebookapp-1.0.0.war
         dest: /opt/tomcat/webapps/
