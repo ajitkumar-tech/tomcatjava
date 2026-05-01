@@ -1,32 +1,9 @@
----
-- name: Deploy WAR file to Tomcat
-  hosts: tomcat_servers
+- name: Send file to remote server
+  hosts: 13.233.216.211
   become: yes
 
-  vars:
-    war_file: facebook-1.0.0.war
-    local_path: /opt/tomcatjava/target/{{ war_file }}
-    remote_path: /opt/apache-tomcat-9.0.117/webapps/{{ war_file }}
-
   tasks:
-
-    - name: Ensure Tomcat webapps directory exists
-      file:
-        path: /opt/apache-tomcat-9.0.117/webapps/
-        state: directory
-        owner: tomcat
-        group: tomcat
-        mode: '0755'
-
-    - name: Copy WAR file to Tomcat webapps
+    - name: Copy WAR file
       copy:
-        src: "{{ local_path }}"
-        dest: "{{ remote_path }}"
-        owner: tomcat
-        group: tomcat
-        mode: '0644'
-
-    - name: Restart Tomcat service
-      service:
-        name: tomcat
-        state: restarted
+        src: facebookapp-1.0.0.war
+        dest: /opt/tomcat/webapps/
