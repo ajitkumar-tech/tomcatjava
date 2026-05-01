@@ -5,5 +5,5 @@
   tasks:
     - name: Copy WAR file
       copy:
-        src: facebookapp-1.0.0.war
+        src: ./target/facebookapp-1.0.0.war
         dest: /opt/tomcat/webapps/
